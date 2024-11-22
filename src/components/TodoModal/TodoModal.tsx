@@ -5,37 +5,31 @@ import { getUser } from '../../services/users';
 import { User } from '../../types/User';
 
 type Props = {
-  setHasTodoClick: (a: boolean) => void;
-  fillteredTodos: Todo[];
-  userId: number;
-  todoId: number;
-  loading: boolean;
+  handleCloseButton: () => void;
+  selectedTodo: Todo;
 };
 
 export const TodoModal: React.FC<Props> = ({
-  setHasTodoClick,
-  fillteredTodos,
-  userId,
-  todoId,
-  loading,
+  handleCloseButton,
+  selectedTodo,
 }) => {
   const [user, setUser] = useState<User | undefined>(undefined);
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
 
   useEffect(() => {
-    getUser(userId).then(setUser);
-  }, [userId]);
-
-  function handleCloseButton() {
-    setHasTodoClick(false);
-  }
-
-  const selectTodo = fillteredTodos.find(todo => todo.id === todoId);
+    setIsLoadingUser(true);
+    getUser(selectedTodo.userId)
+      .then(setUser)
+      .finally(() => {
+        setIsLoadingUser(false);
+      });
+  }, [selectedTodo.userId]);
 
   return (
     <div className="modal is-active" data-cy="modal">
       <div className="modal-background" />
 
-      {selectTodo && !user && !loading ? (
+      {isLoadingUser ? (
         <Loader />
       ) : (
         <div className="modal-card">
@@ -44,7 +38,7 @@ export const TodoModal: React.FC<Props> = ({
               className="modal-card-title has-text-weight-medium"
               data-cy="modal-header"
             >
-              Todo #{selectTodo?.id}
+              Todo #{selectedTodo?.id}
             </div>
 
             {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
@@ -58,17 +52,16 @@ export const TodoModal: React.FC<Props> = ({
 
           <div className="modal-card-body">
             <p className="block" data-cy="modal-title">
-              {selectTodo?.title}
+              {selectedTodo?.title}
             </p>
 
             <p className="block" data-cy="modal-user">
-              {selectTodo?.completed ? (
+              {selectedTodo?.completed ? (
                 <strong className="has-text-success">Done</strong>
               ) : (
                 <strong className="has-text-danger">Planned</strong>
               )}
               {' by '}
-
               <a href="mailto:Sincere@april.biz">{user?.name}</a>
             </p>
           </div>

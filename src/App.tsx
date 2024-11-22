@@ -16,12 +16,10 @@ export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [optionsValue, setOptionsValue] = useState('all');
   const [inputValue, setInputValue] = useState('');
-  const [hasTodoClick, setHasTodoClick] = useState(false);
-  const [userId, setUserId] = useState(0);
-  const [todoId, setTodoId] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
 
-  const fillteredTodos = useMemo(() => {
+  const filteredTodos = useMemo(() => {
     return [...todos].filter(todo =>
       todo.title.toLowerCase().includes(inputValue.toLowerCase()),
     );
@@ -45,6 +43,14 @@ export const App: React.FC = () => {
     }
   }, [optionsValue]);
 
+  function handleCloseButton() {
+    setSelectedTodo(null);
+  }
+
+  function handleSelectedTodo(todo: Todo) {
+    setSelectedTodo(todo);
+  }
+
   return (
     <>
       <div className="section">
@@ -64,22 +70,16 @@ export const App: React.FC = () => {
             <div className="block">
               {!loading && todos.length > 0 && (
                 <TodoList
-                  fillteredTodos={fillteredTodos}
-                  hasTodoClick={hasTodoClick}
-                  setHasTodoClick={setHasTodoClick}
-                  setUserId={setUserId}
-                  setTodoId={setTodoId}
-                  todoId={todoId}
+                  filteredTodos={filteredTodos}
+                  handleSelectedTodo={handleSelectedTodo}
+                  selectedTodo={selectedTodo}
                 />
               )}
             </div>
-            {hasTodoClick && (
+            {selectedTodo && (
               <TodoModal
-                setHasTodoClick={setHasTodoClick}
-                fillteredTodos={fillteredTodos}
-                userId={userId}
-                todoId={todoId}
-                loading={loading}
+                handleCloseButton={handleCloseButton}
+                selectedTodo={selectedTodo}
               />
             )}
           </div>

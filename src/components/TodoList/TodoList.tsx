@@ -3,21 +3,15 @@ import { Todo } from '../../types/Todo';
 import classNames from 'classnames';
 
 type Props = {
-  fillteredTodos: Todo[];
-  setHasTodoClick: (a: boolean) => void;
-  hasTodoClick: boolean;
-  setUserId: (a: number) => void;
-  setTodoId: (a: number) => void;
-  todoId: number;
+  filteredTodos: Todo[];
+  handleSelectedTodo: (todo: Todo) => void;
+  selectedTodo: Todo | null;
 };
 
 export const TodoList: React.FC<Props> = ({
-  fillteredTodos,
-  setHasTodoClick,
-  hasTodoClick,
-  setUserId,
-  setTodoId,
-  todoId,
+  filteredTodos,
+  handleSelectedTodo,
+  selectedTodo,
 }) => {
   return (
     <table className="table is-narrow is-fullwidth">
@@ -35,7 +29,7 @@ export const TodoList: React.FC<Props> = ({
       </thead>
 
       <tbody>
-        {fillteredTodos.map(todo => (
+        {filteredTodos.map(todo => (
           <tr data-cy="todo" className="" key={todo.id}>
             <td className="is-vcentered">{todo.id}</td>
             <td className="is-vcentered">
@@ -61,18 +55,15 @@ export const TodoList: React.FC<Props> = ({
                 className="button"
                 type="button"
                 onClick={() => {
-                  setHasTodoClick(true);
-                  setUserId(todo.userId);
-                  setTodoId(todo.id);
+                  handleSelectedTodo(todo);
                 }}
               >
                 <span className="icon">
-                  <i
-                    className={classNames({
-                      'far fa-eye-slash': hasTodoClick || todo.id === todoId,
-                      'far fa-eye': !hasTodoClick || todo.id !== todoId,
-                    })}
-                  />
+                  {selectedTodo && selectedTodo.id === todo.id ? (
+                    <i className="far fa-eye-slash" />
+                  ) : (
+                    <i className="far fa-eye" />
+                  )}
                 </span>
               </button>
             </td>

@@ -9,11 +9,11 @@ export const TodoFilter: React.FC<Props> = ({
   setInputValue,
   inputValue,
 }) => {
-  function handleOptionValue(event: React.ChangeEvent<HTMLInputElement>) {
+  function handleOptionValue(event: React.ChangeEvent<HTMLSelectElement>) {
     setOptionsValue(event.target.value);
   }
 
-  function handleInputValue(event: React.ChangeEvent<HTMLSelectElement>) {
+  function handleInputValue(event: React.ChangeEvent<HTMLInputElement>) {
     setInputValue(event.target.value);
   }
 
